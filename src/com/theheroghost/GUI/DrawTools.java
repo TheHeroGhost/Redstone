@@ -15,6 +15,11 @@ public class DrawTools extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
+        for(int i = 0; i < main.Buttons.size(); i++) {
+            CustomButton cb = main.Buttons.get(i);
+            cb.Draw(g);
+        }
+
         Draw(g);
 
         repaint();

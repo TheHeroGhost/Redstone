@@ -16,6 +16,7 @@ public class CustomButton implements MouseMotionListener, MouseListener {
     private boolean Hover;
     private boolean Visible = true;
     private boolean framed = true;
+    private boolean Registered;
 
     private String Text;
 
@@ -191,6 +192,14 @@ public class CustomButton implements MouseMotionListener, MouseListener {
 
     public void setHoverColor(Color hoverColo) {
         HoverColor = hoverColo;
+    }
+
+    public boolean isRegistered() {
+        return Registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        Registered = registered;
     }
 
     //MouseListener

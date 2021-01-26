@@ -1,14 +1,18 @@
 package com.theheroghost.GUI;
 
 import com.theheroghost.main.main;
+import com.theheroghost.utils.Register;
 
 import javax.swing.*;
 
 public class Window {
 
     private JFrame jf;
+
     private int Width;
     private int Height;
+
+    private static Register r = new Register();
 
     public JFrame getWindow() {
         return jf;
@@ -37,5 +41,6 @@ public class Window {
     public void addButton(CustomButton cb) {
         jf.addMouseMotionListener(cb);
         jf.addMouseListener(cb);
+        r.registerButtons(cb);
     }
 }

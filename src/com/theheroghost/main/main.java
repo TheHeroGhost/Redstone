@@ -3,6 +3,7 @@ package com.theheroghost.main;
 import com.theheroghost.GUI.CustomButton;
 import com.theheroghost.GUI.DrawTools;
 import com.theheroghost.GUI.Window;
+import com.theheroghost.utils.Register;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,6 @@ public class main {
     private static String Developer = "TheHeroGhost";
 
     public static ArrayList<CustomButton> Buttons = new ArrayList<CustomButton>();
-    public static CustomButton button = new CustomButton("test", 30,50, 100, 30);
 
     /**
      * Redstone main class
@@ -30,13 +30,7 @@ public class main {
         }
     }
 
-    private static Window w = new Window();
-    private static DrawTools dt = new DrawTools();
-
     public static void main(String[] args) {
-        w.createWindow("test", 500, 500);
-        w.addDraw(dt);
-        w.addButton(button);
     }
 
     public static String getVersion() {
