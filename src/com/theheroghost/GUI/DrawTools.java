@@ -22,6 +22,8 @@ public class DrawTools extends JPanel {
 
         Draw(g);
 
+        setDoubleBuffered(true);
+
         repaint();
     }
 

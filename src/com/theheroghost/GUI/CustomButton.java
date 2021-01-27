@@ -9,19 +9,24 @@ import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 
-public class CustomButton implements MouseMotionListener, MouseListener {
+public abstract class CustomButton implements MouseMotionListener, MouseListener {
 
     private int x, y, SizeX, SizeY;
 
     private boolean Hover;
     private boolean Visible = true;
-    private boolean framed = true;
-    private boolean Registered;
+    private boolean Framed = true;
+    private boolean Active = true;
+    private boolean Background;
+    private boolean Pressed;
 
     private String Text;
 
-    private float transparent = 0.3f;
+    private float HoverTransparent = 0.3f;
+    private float BackgroundTransparent = 0.7f;
+    private float PressedTransparent = 0.3f;
 
+    private Color BackgroundColor = Color.CYAN;
     private Color TextColor = Color.BLACK;
     private Color FrameColor = Color.BLACK;
     private Color HoverColor = Color.GRAY;
@@ -36,11 +41,36 @@ public class CustomButton implements MouseMotionListener, MouseListener {
         SizeY = sizeY;
     }
 
-    public void Draw(Graphics g) {
-        if(isVisible()) {
+    public CustomButton(String text, int x, int y, int sizeX, int sizeY, boolean visible) {
+        this.x = x;
+        this.y = y;
+        SizeX = sizeX;
+        SizeY = sizeY;
+        Visible = visible;
+        Text = text;
+    }
 
+    public CustomButton(String text, int x, int y, int sizeX, int sizeY, boolean visible, boolean framed) {
+        this.x = x;
+        this.y = y;
+        SizeX = sizeX;
+        SizeY = sizeY;
+        Visible = visible;
+        Text = text;
+        Framed = framed;
+    }
+
+    public void Draw(Graphics g) {
+        if(isVisible() && isActive()) {
+            //Background
+            if(isBackground()) {
+                ((Graphics2D) g).setComposite(AlphaComposite.SrcOver.derive(getBackgroundTransparent()));
+                g.setColor(getBackgroundColor());
+                g.fillRect(getX(), getY(), getSizeX(), getSizeY());
+            }
             //Frame
             if (isFramed()) {
+                ((Graphics2D) g).setComposite(AlphaComposite.SrcOver.derive(1f));
                 g.setColor(getFrameColor());
                 g.drawLine(getX(), getY(), getX() + getSizeX(), getY());
                 g.drawLine(getX(), getY() + getSizeY(), getX() + getSizeX(), getY() + getSizeY());
@@ -50,7 +80,10 @@ public class CustomButton implements MouseMotionListener, MouseListener {
 
             //Hover
             if(isHover()) {
-                ((Graphics2D) g).setComposite(AlphaComposite.SrcOver.derive(getTransparent()));
+                ((Graphics2D) g).setComposite(AlphaComposite.SrcOver.derive(getHoverTransparent()));
+                if(isPressed()) {
+                    ((Graphics2D) g).setComposite(AlphaComposite.SrcOver.derive(getHoverTransparent() + getPressedTransparent()));
+                }
                 g.setColor(getHoverColor());
                 g.fillRect(getX(), getY(), getSizeX(), getSizeY());
             }
@@ -66,27 +99,31 @@ public class CustomButton implements MouseMotionListener, MouseListener {
         }
     }
 
-    public void onButtonPressEvent() {
-    }
+    public abstract void onButtonPressEvent();
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        int MouseX = e.getX() - 8;
-        int MouseY = e.getY() - 31;
-        if(MouseX > getX() && MouseX < getX() + getSizeX() && MouseY > getY() && MouseY < getY() + getSizeY()) {
-            setHover(true);
-        } else {
-            setHover(false);
+        if(isActive()) {
+            int MouseX = e.getX() - 8;
+            int MouseY = e.getY() - 31;
+            if (MouseX > getX() && MouseX < getX() + getSizeX() && MouseY > getY() && MouseY < getY() + getSizeY()) {
+                setHover(true);
+            } else {
+                setHover(false);
+            }
         }
     }
 
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int MouseX = e.getX() - 8;
-        int MouseY = e.getY() - 31;
-        if(MouseX > getX() && MouseX < getX() + getSizeX() && MouseY > getY() && MouseY < getY() + getSizeY()) {
-            onButtonPressEvent();
+        if(isActive()) {
+            int MouseX = e.getX() - 8;
+            int MouseY = e.getY() - 31;
+            if (MouseX > getX() && MouseX < getX() + getSizeX() && MouseY > getY() && MouseY < getY() + getSizeY()) {
+                setPressed(true);
+                onButtonPressEvent();
+            }
         }
     }
 
@@ -139,11 +176,11 @@ public class CustomButton implements MouseMotionListener, MouseListener {
     }
 
     public boolean isFramed() {
-        return framed;
+        return Framed;
     }
 
     public void setFramed(boolean framed) {
-        this.framed = framed;
+        this.Framed = framed;
     }
 
     public String getText() {
@@ -178,12 +215,12 @@ public class CustomButton implements MouseMotionListener, MouseListener {
         this.font = font;
     }
 
-    public float getTransparent() {
-        return transparent;
+    public float getHoverTransparent() {
+        return HoverTransparent;
     }
 
-    public void setTransparent(float transparent) {
-        this.transparent = transparent;
+    public void setHoverTransparent(float HoverTransparent) {
+        this.HoverTransparent = HoverTransparent;
     }
 
     public Color getHoverColor() {
@@ -194,12 +231,52 @@ public class CustomButton implements MouseMotionListener, MouseListener {
         HoverColor = hoverColo;
     }
 
-    public boolean isRegistered() {
-        return Registered;
+    public boolean isActive() {
+        return Active;
     }
 
-    public void setRegistered(boolean registered) {
-        Registered = registered;
+    public void setActive(boolean active) {
+        Active = active;
+    }
+
+    public boolean isBackground() {
+        return Background;
+    }
+
+    public void setBackground(boolean background) {
+        Background = background;
+    }
+
+    public Color getBackgroundColor() {
+        return BackgroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        BackgroundColor = backgroundColor;
+    }
+
+    public float getBackgroundTransparent() {
+        return BackgroundTransparent;
+    }
+
+    public void setBackgroundTransparent(float backgroundTransparent) {
+        BackgroundTransparent = backgroundTransparent;
+    }
+
+    public boolean isPressed() {
+        return Pressed;
+    }
+
+    public void setPressed(boolean pressed) {
+        Pressed = pressed;
+    }
+
+    public float getPressedTransparent() {
+        return PressedTransparent;
+    }
+
+    public void setPressedTransparent(float pressedTransparent) {
+        PressedTransparent = pressedTransparent;
     }
 
     //MouseListener
@@ -210,7 +287,7 @@ public class CustomButton implements MouseMotionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        setPressed(false);
     }
 
     @Override
