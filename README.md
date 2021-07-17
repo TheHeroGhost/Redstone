@@ -1,3 +1,3 @@
 # Redstone
 Version: 1.0.0
-Vote: Du stinkst
+Vote: https://minecraft-server.eu/voteasfdsafasfasfasf/index/22077
